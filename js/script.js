@@ -300,24 +300,6 @@ async function excluirVaga() {
 window.onload = () => {
     carregarVagas();
 };
-            
-            const response = await fetch(
-                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-                { method: 'POST', body: formData }
-            );
-            
-            if (!response.ok) {
-                throw new Error(`Upload falhou: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            novaFoto = data.secure_url;
-            showMessage('Foto enviada com sucesso!', 'success');
-        } catch (err) {
-            console.error('Erro ao fazer upload da foto:', err);
-            showMessage('Erro ao fazer upload da foto. Membro será salvo com foto anterior.', 'warning');
-        }
-    }
 
     membro.nome = novoNome;
     membro.sobrenome = novoSobrenome;
