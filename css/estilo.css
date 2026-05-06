@@ -552,6 +552,8 @@ footer a:hover {
         width: 100%;
     }
 }
+
+#adminLogin {
     border-radius: 20px;
     cursor: pointer;
     font-size: 0.8rem;
