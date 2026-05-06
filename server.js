@@ -93,7 +93,8 @@ app.post('/api/vagas/:id/reservar', async (req, res) => {
 });
 
 app.put('/api/vagas/:id/status', async (req, res) => {
-  try {, usuarioWhatsapp } = req.body;
+  try {
+    const { status, usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp } = req.body;
     const vaga = await Vaga.findById(req.params.id);
     if (!vaga) return res.status(404).json({ error: 'Vaga não encontrada' });
 
@@ -107,8 +108,7 @@ app.put('/api/vagas/:id/status', async (req, res) => {
         vaga.usuarioNome = null;
         vaga.usuarioIdade = null;
         vaga.usuarioPronomes = null;
-        vaga.usuarioWhatsappnull;
-        vaga.usuarioPronomes = null;
+        vaga.usuarioWhatsapp = null;
     }
     await vaga.save();
     res.json(vaga);
@@ -124,35 +124,6 @@ app.delete('/api/vagas/:id', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-});
-
-    const filho = new Membro({
-      nome,
-      sobrenome,
-      foto,
-      familia: pai.familia,
-      pai: pai._id,
-      mae: mae ? mae._id : null
-    });
-    await filho.save();
-
-    pai.filhos.push(filho._id);
-    if (mae) mae.filhos.push(filho._id);
-    await pai.save();
-    if (mae) await mae.save();
-    res.json(filho);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.delete('/api/membros/:id', async (req, res) => {
-  try {
-    await Membro.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Membro removido e tornado órfão' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
 app.listen(PORT, () => {
