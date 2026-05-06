@@ -299,14 +299,6 @@ async function excluirVaga() {
 // Inicialização
 window.onload = () => {
     carregarVagas();
-    // Remover splash screen
-    setTimeout(() => {
-        const splash = document.getElementById('splashScreen');
-        const main = document.getElementById('mainContent');
-        
-        if (splash) splash.style.display = 'none';
-        if (main) main.style.display = 'block';
-    }, 1000);
 };
             
             const response = await fetch(
