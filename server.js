@@ -23,6 +23,15 @@ const db = admin.database();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Forçar o tipo MIME correto para CSS antes de servir arquivos estáticos
+app.use('/css', (req, res, next) => {
+  if (req.url.endsWith('.css')) {
+    res.header('Content-Type', 'text/css');
+  }
+  next();
+});
+
 app.use(express.static(path.join(__dirname))); 
 
 // Configurar Cloudinary
