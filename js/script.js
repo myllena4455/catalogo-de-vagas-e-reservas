@@ -40,7 +40,8 @@ function verificarSenha() {
 
 async function carregarVagas() {
     try {
-        const response = await fetch('/api/vagas');
+        const response = await fetch('http://localhost:3000/api/vagas');
+        if (!response.ok) throw new Error('Falha ao carregar API');
         vagas = await response.json();
         renderizarGrid();
     } catch (err) {
