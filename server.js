@@ -24,15 +24,14 @@ const db = admin.database();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Forçar o tipo MIME correto para CSS antes de servir arquivos estáticos
-app.use('/css', (req, res, next) => {
-  if (req.url.endsWith('.css')) {
-    res.header('Content-Type', 'text/css');
-  }
-  next();
-});
+// Servir arquivos estáticos com express.static (isso geralmente já define os MIME types corretamente)
+app.use(express.static(__dirname)); 
 
-app.use(express.static(path.join(__dirname))); 
+// Fallback para index.html (SPA)
+app.get('*', (req, res, next) => {
+  if (req.url.startsWith('/api')) return next();
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Configurar Cloudinary
 cloudinary.config({
