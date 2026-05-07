@@ -5,6 +5,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const Vaga = require('./models/Vaga');
 
 const app = express();
@@ -13,14 +15,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname))); // Servir arquivos da raiz (index.html, js, css)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Servir pasta de uploads
-
-// Criar pasta de uploads se não existir
-const fs = require('fs');
-if (!fs.existsSync('./uploads')){
-    fs.mkdirSync('./uploads');
-}
+app.use(express.static(path.join(__dirname))); 
 
 // Conectar ao MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/vagas_reservas', {
@@ -29,15 +24,21 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/vagas_reser
 }).then(() => console.log('Conectado ao MongoDB'))
   .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
 
-// Configuração para upload de fotos
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
+// Configurar Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'vagas_vagas',
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+  },
+});
+
 const upload = multer({ storage });
 
 // Rotas para Vagas
@@ -53,7 +54,7 @@ app.get('/api/vagas', async (req, res) => {
 app.post('/api/vagas', upload.single('foto'), async (req, res) => {
   try {
     const { personagem, obra, idadePersonagem, familia, usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp } = req.body;
-    const foto = req.file ? `/uploads/${req.file.filename}` : req.body.foto;
+    const foto = req.file ? req.file.path : req.body.foto; // Pega a URL do Cloudinary se existir
 
     const existe = await Vaga.findOne({ personagem: new RegExp(`^${personagem}$`, 'i') });
     if (existe) {
