@@ -42,7 +42,15 @@
     </div>
 
     <form id="vagaForm" style="display:none;">
-        <h3>Novo Personagem</h3>
+        <h3 id="formTitle">Novo Personagem</h3>
+        <div class="form-section">
+            <label>Tipo de Entrada:</label>
+            <select id="vagaTipoCadastro" onchange="toggleFormularioModo()">
+                <option value="Vaga">Vaga Comum (Dono definitivo)</option>
+                <option value="Reserva">Reserva Temporária (Parente/Futuro)</option>
+            </select>
+        </div>
+
         <div class="form-section">
             <h4>Dados do Personagem</h4>
             <input type="text" id="nomePersonagem" placeholder="Nome do Personagem" required>
@@ -55,23 +63,24 @@
         </div>
 
         <div class="form-section">
-            <h4>Seus Dados (Dono da Reserva)</h4>
-            <input type="text" id="usuarioNome" placeholder="Seu Nome / Nick" required>
-            <input type="text" id="usuarioIdade" placeholder="Sua Idade" required>
-            <input type="text" id="usuarioPronomes" placeholder="Seus Pronomes" required>
-            <input type="text" id="usuarioWhatsapp" placeholder="Seu WhatsApp (Ex: 55819...)" required>
+            <h4 id="dadosUsuarioTitulo">Dados do Dono</h4>
+            <input type="text" id="usuarioNome" placeholder="Nome / Nick" required>
+            <input type="text" id="usuarioIdade" placeholder="Idade" required>
+            <input type="text" id="usuarioPronomes" placeholder="Pronomes" required>
+            <input type="text" id="usuarioWhatsapp" placeholder="WhatsApp (Ex: 55819...)" required>
             
-            <label>Parentesco / Relação:</label>
-            <select id="usuarioParentesco">
-                <option value="">Não especificado</option>
-                <option value="Marido">Marido</option>
-                <option value="Esposa">Esposa</option>
-                <option value="Filho(a)">Filho(a)</option>
-                <option value="Pai">Pai</option>
-                <option value="Mãe">Mãe</option>
-                <option value="Irmão(ã)">Irmão(ã)</option>
-                <option value="Outro">Outro</option>
-            </select>
+            <div id="campoParentesco" style="display:none;">
+                <label>Parentesco / Relação (Para Reservas):</label>
+                <select id="usuarioParentesco">
+                    <option value="">Não especificado</option>
+                    <option value="Marido">Marido</option>
+                    <option value="Esposa">Esposa</option>
+                    <option value="Filho(a)">Filho(a)</option>
+                    <option value="Pai">Pai</option>
+                    <option value="Mãe">Mãe</option>
+                    <option value="Irmão(ã)">Irmão(ã)</option>
+                </select>
+            </div>
         </div>
 
         <button type="button" class="btn-save" onclick="executarCadastroVaga()">Confirmar Cadastro</button>
@@ -129,6 +138,7 @@
                 <input type="text" id="editUsuarioPronomes" placeholder="Pronomes">
             </div>
 
+            <button id="btnTransformarVaga" class="btn-save" style="display:none; background-color: #28a745; margin-bottom: 10px;" onclick="transformarReservaEmVaga()">Transformar em Vaga Ocupada</button>
             <button class="btn-save" onclick="salvarAlteracaoAdmin()">Salvar Alterações</button>
             <button class="btn-delete" onclick="excluirVaga()">Excluir Personagem</button>
             <button onclick="fecharEditModal()">Cancelar</button>

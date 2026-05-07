@@ -199,18 +199,22 @@ async function confirmarReserva() {
     }
 }
 
-function mostrarFormVaga() {
-    const form = document.getElementById('vagaForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-}
-
-function toggleCamposUsuario() {
+function toggleFormularioModo() {
     const tipo = document.getElementById('vagaTipoCadastro').value;
-    const section = document.getElementById('sectionUsuarioCadastro');
-    section.style.display = tipo === 'Ocupado' ? 'block' : 'none';
+    const campoParentesco = document.getElementById('campoParentesco');
+    const tituloDados = document.getElementById('dadosUsuarioTitulo');
+    
+    if (tipo === 'Reserva') {
+        campoParentesco.style.display = 'block';
+        tituloDados.textContent = 'Dados de quem está reservando';
+    } else {
+        campoParentesco.style.display = 'none';
+        tituloDados.textContent = 'Dados do Dono (Vaga Ocupada)';
+    }
 }
 
 async function executarCadastroVaga() {
+    const tipo = document.getElementById('vagaTipoCadastro').value;
     const personagem = document.getElementById('nomePersonagem').value.trim();
     const idadePersonagem = document.getElementById('idadePersonagem').value.trim();
     const obra = document.getElementById('obraPersonagem').value.trim();
@@ -225,7 +229,7 @@ async function executarCadastroVaga() {
     const usuarioParentesco = document.getElementById('usuarioParentesco').value;
 
     if (!personagem || !obra || !usuarioNome || !usuarioWhatsapp) {
-        return showMessage("Preencha todos os campos obrigatórios (Personagem, Obra, Seu Nome e WhatsApp)!", "error");
+        return showMessage("Preencha todos os campos obrigatórios!", "error");
     }
 
     const formData = new FormData();
@@ -239,35 +243,74 @@ async function executarCadastroVaga() {
     formData.append('usuarioIdade', usuarioIdade);
     formData.append('usuarioPronomes', usuarioPronomes);
     formData.append('usuarioWhatsapp', usuarioWhatsapp);
-    formData.append('usuarioParentesco', usuarioParentesco);
-    formData.append('status', 'Ocupado');
     
-    if (usuarioNome) {
-        formData.append('usuarioNome', usuarioNome);
-        formData.append('usuarioIdade', usuarioIdade);
-        formData.append('usuarioPronomes', usuarioPronomes);
-        formData.append('usuarioWhatsapp', usuarioWhatsapp);
+    if (tipo === 'Reserva') {
+        formData.append('status', 'Reservado');
+        formData.append('usuarioParentesco', usuarioParentesco);
+    } else {
+        formData.append('status', 'Ocupado');
+        formData.append('usuarioParentesco', '');
     }
 
     try {
         const res = await fetch(`${API_URL}/api/vagas`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp })
+            body: formData
         });
 
         if (res.ok) {
-            showMessage("Personagem cadastrado!", "success");
+            showMessage("Cadastrado com sucesso!", "success");
             document.getElementById('vagaForm').reset();
-            document.getElementById('vagaForm').style.display = 'none';
+            mostrarFormVaga();
             carregarVagas();
         } else {
             const data = await res.json();
-            showMessage(data.error, "error");
+            showMessage(data.error || "Erro ao cadastrar", "error");
         }
     } catch (err) {
-        showMessage("Erro ao cadastrar.", "error");
+        showMessage("Erro ao cadastrar personagem.", "error");
     }
+}
+
+async function transformarReservaEmVaga() {
+    if (!vagaEmEdicao) return;
+    const vaga = vagas.find(v => v._id === vagaEmEdicao);
+    
+    if (!confirm(`Deseja transformar a reserva de ${vaga.personagem} em uma vaga ocupada definitiva?`)) return;
+
+    try {
+        const res = await fetch(`${API_URL}/api/vagas/${vagaEmEdicao}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                status: 'Ocupado',
+                usuarioNome: vaga.usuarioNome,
+                usuarioIdade: vaga.usuarioIdade,
+                usuarioPronomes: vaga.usuarioPronomes,
+                usuarioWhatsapp: vaga.usuarioWhatsapp,
+                usuarioParentesco: '' // Limpa o parentesco pois agora é o dono
+            })
+        });
+
+        if (res.ok) {
+            showMessage("Transformado em Vaga Ocupada!", "success");
+            fecharEditModal();
+            carregarVagas();
+        }
+    } catch (err) {
+        showMessage("Erro ao transformar reserva.", "error");
+    }
+}
+
+function mostrarFormVaga() {
+    const form = document.getElementById('vagaForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleCamposUsuario() {
+    const tipo = document.getElementById('vagaTipoCadastro').value;
+    const section = document.getElementById('sectionUsuarioCadastro');
+    if(section) section.style.display = tipo === 'Ocupado' ? 'block' : 'none';
 }
 
 function abrirEdicaoAdmin(id) {
@@ -278,6 +321,18 @@ function abrirEdicaoAdmin(id) {
     document.getElementById('editUsuarioNome').value = vaga.usuarioNome || '';
     document.getElementById('editUsuarioIdade').value = vaga.usuarioIdade || '';
     document.getElementById('editUsuarioPronomes').value = vaga.usuarioPronomes || '';
+    document.getElementById('editUsuarioWhatsapp').value = vaga.usuarioWhatsapp || '';
+
+    // Botão de transformar reserva em vaga
+    const btnTransformar = document.getElementById('btnTransformarVaga');
+    if (vaga.status === 'Reservado') {
+        btnTransformar.style.display = 'block';
+    } else {
+        btnTransformar.style.display = 'none';
+    }
+
+    document.getElementById('editModal').style.display = 'block';
+}
     document.getElementById('editUsuarioWhatsapp').value = vaga.usuarioWhatsapp || '';
     document.getElementById('editModal').style.display = 'block';
 }
