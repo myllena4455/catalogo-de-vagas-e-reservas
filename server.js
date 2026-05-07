@@ -115,11 +115,6 @@ app.post('/api/vagas/:id/reservar', async (req, res) => {
         usuarioParentesco,
         reservadoEm: new Date().toISOString()
     });
-        usuarioIdade,
-        usuarioPronomes,
-        usuarioWhatsapp,
-        reservadoEm: new Date().toISOString()
-    });
 
     res.json({ message: 'Reservado com sucesso' });
   } catch (err) {
