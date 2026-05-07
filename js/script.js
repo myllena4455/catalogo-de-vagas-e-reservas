@@ -274,9 +274,14 @@ async function executarCadastroVaga() {
 
 async function transformarReservaEmVaga() {
     if (!vagaEmEdicao) return;
-    const vaga = vagas.find(v => v._id === vagaEmEdicao);
     
-    if (!confirm(`Deseja transformar a reserva de ${vaga.personagem} em uma vaga ocupada definitiva?`)) return;
+    // Pegamos os valores atuais dos campos de edição, caso o ADM tenha alterado algo antes de transformar
+    const usuarioNome = document.getElementById('editUsuarioNome').value.trim();
+    const usuarioIdade = document.getElementById('editUsuarioIdade').value.trim();
+    const usuarioPronomes = document.getElementById('editUsuarioPronomes').value.trim();
+    const usuarioWhatsapp = document.getElementById('editUsuarioWhatsapp').value.trim();
+
+    if (!confirm(`Deseja transformar esta reserva em uma vaga ocupada definitiva para ${usuarioNome}?`)) return;
 
     try {
         const res = await fetch(`${API_URL}/api/vagas/${vagaEmEdicao}/status`, {
@@ -284,20 +289,25 @@ async function transformarReservaEmVaga() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 status: 'Ocupado',
-                usuarioNome: vaga.usuarioNome,
-                usuarioIdade: vaga.usuarioIdade,
-                usuarioPronomes: vaga.usuarioPronomes,
-                usuarioWhatsapp: vaga.usuarioWhatsapp,
-                usuarioParentesco: '' // Limpa o parentesco pois agora é o dono
+                usuarioNome,
+                usuarioIdade,
+                usuarioPronomes,
+                usuarioWhatsapp,
+                usuarioParentesco: '' // Limpa o parentesco pois agora é o dono definitivo
             })
         });
 
         if (res.ok) {
-            showMessage("Transformado em Vaga Ocupada!", "success");
+            showMessage("Reserva transformada em Vaga Ocupada!", "success");
             fecharEditModal();
             carregarVagas();
+        } else {
+            showMessage("Erro ao transformar reserva.", "error");
         }
     } catch (err) {
+        showMessage("Erro de conexão.", "error");
+    }
+}
         showMessage("Erro ao transformar reserva.", "error");
     }
 }

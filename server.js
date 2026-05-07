@@ -133,11 +133,15 @@ app.put('/api/vagas/:id/status', async (req, res) => {
         updates.usuarioIdade = usuarioIdade;
         updates.usuarioPronomes = usuarioPronomes;
         updates.usuarioWhatsapp = usuarioWhatsapp;
+        if (req.body.usuarioParentesco !== undefined) {
+            updates.usuarioParentesco = req.body.usuarioParentesco;
+        }
     } else {
         updates.usuarioNome = null;
         updates.usuarioIdade = null;
         updates.usuarioPronomes = null;
         updates.usuarioWhatsapp = null;
+        updates.usuarioParentesco = null;
     }
 
     await ref.update(updates);
