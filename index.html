@@ -44,14 +44,6 @@
     <form id="vagaForm" style="display:none;">
         <h3>Novo Personagem</h3>
         <div class="form-section">
-            <label>O que você deseja fazer?</label>
-            <select id="vagaTipoCadastro" onchange="toggleCamposUsuario()">
-                <option value="Livre">Apenas Adicionar ao Catálogo (Livre)</option>
-                <option value="Ocupado">Cadastrar e Já Ocupar (Para alguém)</option>
-            </select>
-        </div>
-
-        <div class="form-section">
             <h4>Dados do Personagem</h4>
             <input type="text" id="nomePersonagem" placeholder="Nome do Personagem" required>
             <input type="text" id="idadePersonagem" placeholder="Idade do Personagem">
@@ -62,12 +54,12 @@
             <input type="file" id="fotoPersonagem" accept="image/*">
         </div>
 
-        <div id="sectionUsuarioCadastro" class="form-section" style="display:none;">
-            <h4>Dados de quem está ocupando/reservando</h4>
-            <input type="text" id="usuarioNome" placeholder="Nome / Nick do Usuário">
-            <input type="text" id="usuarioIdade" placeholder="Idade do Usuário">
-            <input type="text" id="usuarioPronomes" placeholder="Seus Pronomes do Usuário">
-            <input type="text" id="usuarioWhatsapp" placeholder="WhatsApp (Ex: 55819...)">
+        <div class="form-section">
+            <h4>Seus Dados (Dono da Reserva)</h4>
+            <input type="text" id="usuarioNome" placeholder="Seu Nome / Nick" required>
+            <input type="text" id="usuarioIdade" placeholder="Sua Idade" required>
+            <input type="text" id="usuarioPronomes" placeholder="Seus Pronomes" required>
+            <input type="text" id="usuarioWhatsapp" placeholder="Seu WhatsApp (Ex: 55819...)" required>
             
             <label>Parentesco / Relação:</label>
             <select id="usuarioParentesco">

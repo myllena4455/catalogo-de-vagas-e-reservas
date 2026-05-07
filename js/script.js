@@ -211,7 +211,6 @@ function toggleCamposUsuario() {
 }
 
 async function executarCadastroVaga() {
-    const tipo = document.getElementById('vagaTipoCadastro').value;
     const personagem = document.getElementById('nomePersonagem').value.trim();
     const idadePersonagem = document.getElementById('idadePersonagem').value.trim();
     const obra = document.getElementById('obraPersonagem').value.trim();
@@ -225,7 +224,9 @@ async function executarCadastroVaga() {
     const usuarioWhatsapp = document.getElementById('usuarioWhatsapp').value.trim();
     const usuarioParentesco = document.getElementById('usuarioParentesco').value;
 
-    if (!personagem || !obra) return showMessage("Nome e Obra são obrigatórios!", "error");
+    if (!personagem || !obra || !usuarioNome || !usuarioWhatsapp) {
+        return showMessage("Preencha todos os campos obrigatórios (Personagem, Obra, Seu Nome e WhatsApp)!", "error");
+    }
 
     const formData = new FormData();
     formData.append('personagem', personagem);
@@ -234,20 +235,12 @@ async function executarCadastroVaga() {
     formData.append('familia', familia);
     if (fotoFile) formData.append('foto', fotoFile);
     
-    // Se for Occupado, os dados do usuário são obrigatórios
-    if (tipo === 'Ocupado') {
-        if (!usuarioNome || !usuarioWhatsapp) {
-            return showMessage("Para cadastrar como ocupado, informe pelo menos o Nome e WhatsApp do usuário!", "error");
-        }
-        formData.append('usuarioNome', usuarioNome);
-        formData.append('usuarioIdade', usuarioIdade);
-        formData.append('usuarioPronomes', usuarioPronomes);
-        formData.append('usuarioWhatsapp', usuarioWhatsapp);
-        formData.append('usuarioParentesco', usuarioParentesco);
-        formData.append('status', 'Ocupado');
-    } else {
-        formData.append('status', 'Livre');
-    }
+    formData.append('usuarioNome', usuarioNome);
+    formData.append('usuarioIdade', usuarioIdade);
+    formData.append('usuarioPronomes', usuarioPronomes);
+    formData.append('usuarioWhatsapp', usuarioWhatsapp);
+    formData.append('usuarioParentesco', usuarioParentesco);
+    formData.append('status', 'Ocupado');
     
     if (usuarioNome) {
         formData.append('usuarioNome', usuarioNome);
