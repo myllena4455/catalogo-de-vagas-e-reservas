@@ -66,8 +66,20 @@
             <h4>Dados de quem está ocupando/reservando</h4>
             <input type="text" id="usuarioNome" placeholder="Nome / Nick do Usuário">
             <input type="text" id="usuarioIdade" placeholder="Idade do Usuário">
-            <input type="text" id="usuarioPronomes" placeholder="Pronomes do Usuário">
+            <input type="text" id="usuarioPronomes" placeholder="Seus Pronomes do Usuário">
             <input type="text" id="usuarioWhatsapp" placeholder="WhatsApp (Ex: 55819...)">
+            
+            <label>Parentesco / Relação:</label>
+            <select id="usuarioParentesco">
+                <option value="">Não especificado</option>
+                <option value="Marido">Marido</option>
+                <option value="Esposa">Esposa</option>
+                <option value="Filho(a)">Filho(a)</option>
+                <option value="Pai">Pai</option>
+                <option value="Mãe">Mãe</option>
+                <option value="Irmão(ã)">Irmão(ã)</option>
+                <option value="Outro">Outro</option>
+            </select>
         </div>
 
         <button type="button" class="btn-save" onclick="executarCadastroVaga()">Confirmar Cadastro</button>
@@ -86,6 +98,18 @@
                 <input type="text" id="reservaUsuarioIdade" placeholder="Sua Idade" required>
                 <input type="text" id="reservaUsuarioPronomes" placeholder="Seus Pronomes" required>
                 <input type="text" id="reservaUsuarioWhatsapp" placeholder="Seu WhatsApp (Ex: 55819...)" required>
+                
+                <label>Parentesco / Relação:</label>
+                <select id="reservaUsuarioParentesco">
+                    <option value="">Não especificado</option>
+                    <option value="Marido">Marido</option>
+                    <option value="Esposa">Esposa</option>
+                    <option value="Filho(a)">Filho(a)</option>
+                    <option value="Pai">Pai</option>
+                    <option value="Mãe">Mãe</option>
+                    <option value="Irmão(ã)">Irmão(ã)</option>
+                    <option value="Outro">Outro</option>
+                </select>
             </div>
             <button class="btn-save" onclick="confirmarReserva()">Confirmar Reserva</button>
             <button onclick="fecharReservaModal()">Cancelar</button>

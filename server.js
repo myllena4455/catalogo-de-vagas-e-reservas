@@ -69,7 +69,7 @@ app.get('/api/vagas', async (req, res) => {
 
 app.post('/api/vagas', upload.single('foto'), async (req, res) => {
   try {
-    const { personagem, obra, idadePersonagem, familia, status, usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp } = req.body;
+    const { personagem, obra, idadePersonagem, familia, status, usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp, usuarioParentesco } = req.body;
     const foto = req.file ? req.file.path : null;
 
     const ref = db.ref('vagas');
@@ -84,6 +84,7 @@ app.post('/api/vagas', upload.single('foto'), async (req, res) => {
         usuarioIdade: usuarioIdade || null, 
         usuarioPronomes: usuarioPronomes || null, 
         usuarioWhatsapp: usuarioWhatsapp || null, 
+        usuarioParentesco: usuarioParentesco || null,
         foto: foto || null,
         status: status || (usuarioNome ? 'Ocupado' : 'Livre')
     };
@@ -97,7 +98,7 @@ app.post('/api/vagas', upload.single('foto'), async (req, res) => {
 
 app.post('/api/vagas/:id/reservar', async (req, res) => {
   try {
-    const { usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp } = req.body;
+    const { usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp, usuarioParentesco } = req.body;
     const ref = db.ref(`vagas/${req.params.id}`);
     const snapshot = await ref.once('value');
     const vaga = snapshot.val();
@@ -108,6 +109,12 @@ app.post('/api/vagas/:id/reservar', async (req, res) => {
     await ref.update({
         status: 'Reservado',
         usuarioNome,
+        usuarioIdade,
+        usuarioPronomes,
+        usuarioWhatsapp,
+        usuarioParentesco,
+        reservadoEm: new Date().toISOString()
+    });
         usuarioIdade,
         usuarioPronomes,
         usuarioWhatsapp,

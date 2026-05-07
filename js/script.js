@@ -167,6 +167,7 @@ async function confirmarReserva() {
     const usuarioIdade = document.getElementById('reservaUsuarioIdade').value.trim();
     const usuarioPronomes = document.getElementById('reservaUsuarioPronomes').value.trim();
     const usuarioWhatsapp = document.getElementById('reservaUsuarioWhatsapp').value.trim();
+    const usuarioParentesco = document.getElementById('reservaUsuarioParentesco').value;
 
     if (!usuarioNome || !usuarioIdade || !usuarioPronomes || !usuarioWhatsapp) {
         return showMessage("Preencha todos os seus dados!", "error");
@@ -176,7 +177,13 @@ async function confirmarReserva() {
         const res = await fetch(`${API_URL}/api/vagas/${vagaEmEdicao}/reservar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp })
+            body: JSON.stringify({ 
+                usuarioNome, 
+                usuarioIdade, 
+                usuarioPronomes, 
+                usuarioWhatsapp,
+                usuarioParentesco
+            })
         });
         
         if (res.ok) {
@@ -216,6 +223,7 @@ async function executarCadastroVaga() {
     const usuarioIdade = document.getElementById('usuarioIdade').value.trim();
     const usuarioPronomes = document.getElementById('usuarioPronomes').value.trim();
     const usuarioWhatsapp = document.getElementById('usuarioWhatsapp').value.trim();
+    const usuarioParentesco = document.getElementById('usuarioParentesco').value;
 
     if (!personagem || !obra) return showMessage("Nome e Obra são obrigatórios!", "error");
 
@@ -235,6 +243,7 @@ async function executarCadastroVaga() {
         formData.append('usuarioIdade', usuarioIdade);
         formData.append('usuarioPronomes', usuarioPronomes);
         formData.append('usuarioWhatsapp', usuarioWhatsapp);
+        formData.append('usuarioParentesco', usuarioParentesco);
         formData.append('status', 'Ocupado');
     } else {
         formData.append('status', 'Livre');
