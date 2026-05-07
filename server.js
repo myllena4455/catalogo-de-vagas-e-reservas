@@ -13,7 +13,14 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public')); // Servir arquivos estáticos
+app.use(express.static(path.join(__dirname))); // Servir arquivos da raiz (index.html, js, css)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Servir pasta de uploads
+
+// Criar pasta de uploads se não existir
+const fs = require('fs');
+if (!fs.existsSync('./uploads')){
+    fs.mkdirSync('./uploads');
+}
 
 // Conectar ao MongoDB
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/vagas_reservas', {
