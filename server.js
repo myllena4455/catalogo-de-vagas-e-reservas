@@ -69,8 +69,8 @@ app.get('/api/vagas', async (req, res) => {
 
 app.post('/api/vagas', upload.single('foto'), async (req, res) => {
   try {
-    const { personagem, obra, idadePersonagem, familia, usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp } = req.body;
-    const foto = req.file ? req.file.path : req.body.foto;
+    const { personagem, obra, idadePersonagem, familia, status, usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp } = req.body;
+    const foto = req.file ? req.file.path : null;
 
     const ref = db.ref('vagas');
     const novaVagaRef = ref.push();
@@ -85,7 +85,7 @@ app.post('/api/vagas', upload.single('foto'), async (req, res) => {
         usuarioPronomes: usuarioPronomes || null, 
         usuarioWhatsapp: usuarioWhatsapp || null, 
         foto: foto || null,
-        status: usuarioNome ? 'Ocupado' : 'Livre'
+        status: status || (usuarioNome ? 'Ocupado' : 'Livre')
     };
 
     await novaVagaRef.set(dadosVaga);

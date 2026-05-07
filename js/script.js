@@ -197,14 +197,21 @@ function mostrarFormVaga() {
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
+function toggleCamposUsuario() {
+    const tipo = document.getElementById('vagaTipoCadastro').value;
+    const section = document.getElementById('sectionUsuarioCadastro');
+    section.style.display = tipo === 'Ocupado' ? 'block' : 'none';
+}
+
 async function executarCadastroVaga() {
+    const tipo = document.getElementById('vagaTipoCadastro').value;
     const personagem = document.getElementById('nomePersonagem').value.trim();
     const idadePersonagem = document.getElementById('idadePersonagem').value.trim();
     const obra = document.getElementById('obraPersonagem').value.trim();
     const familia = document.getElementById('familiaPersonagem').value.trim();
     const fotoFile = document.getElementById('fotoPersonagem').files[0];
     
-    // Dados do usuário (opcionais no cadastro)
+    // Dados do usuário
     const usuarioNome = document.getElementById('usuarioNome').value.trim();
     const usuarioIdade = document.getElementById('usuarioIdade').value.trim();
     const usuarioPronomes = document.getElementById('usuarioPronomes').value.trim();
@@ -218,6 +225,20 @@ async function executarCadastroVaga() {
     formData.append('obra', obra);
     formData.append('familia', familia);
     if (fotoFile) formData.append('foto', fotoFile);
+    
+    // Se for Occupado, os dados do usuário são obrigatórios
+    if (tipo === 'Ocupado') {
+        if (!usuarioNome || !usuarioWhatsapp) {
+            return showMessage("Para cadastrar como ocupado, informe pelo menos o Nome e WhatsApp do usuário!", "error");
+        }
+        formData.append('usuarioNome', usuarioNome);
+        formData.append('usuarioIdade', usuarioIdade);
+        formData.append('usuarioPronomes', usuarioPronomes);
+        formData.append('usuarioWhatsapp', usuarioWhatsapp);
+        formData.append('status', 'Ocupado');
+    } else {
+        formData.append('status', 'Livre');
+    }
     
     if (usuarioNome) {
         formData.append('usuarioNome', usuarioNome);
