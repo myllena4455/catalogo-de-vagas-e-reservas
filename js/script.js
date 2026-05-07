@@ -38,9 +38,13 @@ function verificarSenha() {
     }
 }
 
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3000' 
+    : ''; // O Render/Host vai usar o caminho relativo automaticamente
+
 async function carregarVagas() {
     try {
-        const response = await fetch('http://localhost:3000/api/vagas');
+        const response = await fetch(`${API_URL}/api/vagas`);
         if (!response.ok) throw new Error('Falha ao carregar API');
         vagas = await response.json();
         renderizarGrid();
@@ -169,7 +173,7 @@ async function confirmarReserva() {
     }
 
     try {
-        const res = await fetch(`/api/vagas/${vagaEmEdicao}/reservar`, {
+        const res = await fetch(`${API_URL}/api/vagas/${vagaEmEdicao}/reservar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp })
@@ -223,9 +227,10 @@ async function executarCadastroVaga() {
     }
 
     try {
-        const res = await fetch('/api/vagas', {
+        const res = await fetch(`${API_URL}/api/vagas`, {
             method: 'POST',
-            body: formData
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp })
         });
 
         if (res.ok) {
@@ -266,7 +271,7 @@ async function salvarAlteracaoAdmin() {
     const usuarioWhatsapp = document.getElementById('editUsuarioWhatsapp').value.trim();
 
     try {
-        const res = await fetch(`/api/vagas/${vagaEmEdicao}/status`, {
+        const res = await fetch(`${API_URL}/api/vagas/${vagaEmEdicao}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status, usuarioNome, usuarioIdade, usuarioPronomes, usuarioWhatsapp })
@@ -286,7 +291,7 @@ async function excluirVaga() {
     if (!confirm("Tem certeza que deseja excluir este personagem?")) return;
 
     try {
-        const res = await fetch(`/api/vagas/${vagaEmEdicao}`, { method: 'DELETE' });
+        const res = await fetch(`${API_URL}/api/vagas/${vagaEmEdicao}`, { method: 'DELETE' });
         if (res.ok) {
             showMessage("Removido!", "success");
             fecharEditModal();
